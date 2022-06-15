@@ -33,7 +33,6 @@ exports.userRegister = function (req,res,next){
 };
 
 exports.userLogin = function (req,res){
-  console.log("reached3");
     if(req.body &&
       req.body.email &&
       req.body.password){
@@ -65,6 +64,7 @@ exports.userLogin = function (req,res){
                 res.status(200).send({
                   //   id: user._id, //huh??
                   success:true,
+                  message:"Successfully registered/logged in",
                   accessToken: token
                 });
               }

@@ -1,7 +1,8 @@
 var User = require("../models/user");
+var config = require("../config.js");
 
 dashboard = function(req,res){
-    console.log("reached7");
+
     User.findOne({
         email: res.locals.email,
     }).exec((err,user) => {
@@ -18,7 +19,7 @@ dashboard = function(req,res){
                 message: "User not found"
             });
         }
-        console.log("reached");
+
         res.send({
             success:true, 
             message:"Successfully Authorized!", 
@@ -27,8 +28,34 @@ dashboard = function(req,res){
         });
     });
 };
-fn2 = function(req,res){
-    res.send("FN2");
-};
+userLogout = (req, res) => {
+  
+      User.findOne({email: res.locals.email}, function(err,foundUser){
+        if(err) {
+          return res.send({message: err});
+        } else {
+          if(foundUser) {
+          
+            
+            const date = config.logout_toc;
+            foundUser.toc = date.toString();
+            foundUser.save(function(err,user){
+              if(err){return res.send({success: false, message:"Error while saving doc"})}
+            });
+    
+         
+            if(!res.headersSent){
+              res.status(200).send({
+                success:true,
+                message:"Successfully logged out"
+              });
+            }
+          }
+          else
+          {return res.send("User not found");}
+        }
+      });
+    
+    };
 
-module.exports = {dashboard,fn2};
+module.exports = {dashboard, userLogout};
