@@ -15,5 +15,5 @@ module.exports = function(app) {
     //using middleware/chain of it, to authorize request for protected route.
     app.get("/api/dashboard", [authJwt], controller.dashboard);
     app.post("/api/logout", [authJwt], controller.userLogout);
-
+    app.post("/api/n");
 };
