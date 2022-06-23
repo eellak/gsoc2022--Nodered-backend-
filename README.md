@@ -11,3 +11,7 @@ Register/login post requests require two key-value pairs - email, and password.
 Authorization requests,
 logout post request requires email and token,
 and dashboard get request just requires "bearer" token inside "Authorization part" of header- client receives a fresh/updated access token for every request, with one day expiry.
+
+React Client-
+will have all the pages/react_routes under src/components, 
+will  use axios to make api calls using FetchAPI.js under  src/utils.
