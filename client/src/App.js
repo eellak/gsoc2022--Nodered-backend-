@@ -1,8 +1,11 @@
-import {Router, Route, Routes} from "react-router-dom"; 
+// import {Router, Route, Routes} from "react-router-dom"; 
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  fetch("/api/temp").then(response => response.text())
+  .then(data => console.log({data}));
+  //research
   return (
     <div className="App">
       <header className="App-header">

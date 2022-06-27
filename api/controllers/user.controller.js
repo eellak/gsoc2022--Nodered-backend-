@@ -1,5 +1,8 @@
 var User = require("../models/user");
 var config = require("../config.js");
+var Docker = require('dockerode');
+const { response } = require("../app");
+
 
 dashboard = function(req,res){
 
@@ -57,5 +60,36 @@ userLogout = (req, res) => {
       });
     
     };
-
+//current
+//create
+createFresh = (req,res) => {
+ const id ={} ;
+  const docker = new Docker({
+    host:'http://localhost',
+    port: id.port||6969,//betterway, options inside create container
+    });
+    docker.createContainer({
+      HostConfig:{
+      PortBindings:{
+        "6969/tcp":[{HostPort:"6969"}]
+      }
+    },
+      Image:'nodered/node-red',
+      Cmd:['/bin/bash'], 
+      name: 'cont2.0'}, function(err, container){
+      container.start(function(err,data){
+        //
+      });
+    });
+    res.data={port:port};
+};
+//save or discard
+stop = (req,res) => {
+  //save,discard
+  //stop
+}
+cloneInstances = (req,res) => {
+//LOOP-1>looping through flows and adding them to containers via cp command
+//LOOP-2>installing npm node modules inside container
+}
 module.exports = {dashboard, userLogout};

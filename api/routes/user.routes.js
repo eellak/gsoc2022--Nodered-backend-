@@ -1,5 +1,6 @@
 const { authJwt } = require("../middlewares");
 const controller = require("../controllers/user.controller");
+
 module.exports = function(app) {
     // app.use(function(req, res, next){ 
     //     res.header(
@@ -16,4 +17,10 @@ module.exports = function(app) {
     app.get("/api/dashboard", [authJwt], controller.dashboard);
     app.post("/api/logout", [authJwt], controller.userLogout);
     app.post("/api/n");
+    app.get("/api/temp",(req,res) => {
+        res.send("hello from apI");
+    });
+    app.post("/api/fresh",(req,res) => {
+
+    });
 };
