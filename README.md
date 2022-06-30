@@ -24,3 +24,9 @@ package.json will be transferred to host via, "cp" command => dependencies will 
 }
 the above steps will persist all necessary minimal info to recreate the instance.
 This procedure has an advantage over the one using volumes -> multiple available annotated deployments can be packaged and pulled up in a single container.
+
+deployment related controllers' complete final implemenation- 
+dockerode API used for creating fresh containers,
+child process, "exec" method, used for saving data(flows and dependencies) while killing containers and transferring the same when cloning request is made. Cloning is done in 2 steps- merging the various flow files, installing all required nodes/modules inside container.
+
+NOTE- each user is limited to be able to run only one container at a time on the server, this restriction can be modified if required. Currently each user upon registration is assigned a unique port on the server where his/her containers are going to listen at.
