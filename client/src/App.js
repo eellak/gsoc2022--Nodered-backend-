@@ -3,7 +3,7 @@ import logo from './logo.svg';
 import './App.css';
 
 function App() {
-  fetch("/api/temp").then(response => response.text())
+  fetch("/api/fresh").then(response => response.text())
   .then(data => console.log({data}));
   //research
   return (

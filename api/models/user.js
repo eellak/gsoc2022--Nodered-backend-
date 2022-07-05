@@ -7,6 +7,10 @@ var UserSchema = new mongoose.Schema({
     //     unique: true,
     //     required:true,
     // },
+    username:{
+        type:String,
+        unique:true,
+    },
     port:{
         type:String,
         unique:true,
@@ -27,7 +31,19 @@ var UserSchema = new mongoose.Schema({
     toc:{
         type: String,
         
-    }
+    },
+    instances: [
+        {annotation:{
+            type:String
+        },
+        accessibility:{
+            type:String
+        },
+        
+        }
+    ]
+
+    
 
 });
 

@@ -20,7 +20,8 @@ module.exports = function(app) {
     app.get("/api/temp",(req,res) => {
         res.send("hello from apI");
     });
-    app.post("/api/fresh",(req,res) => {
-
+    app.get("/api/fresh",(req,res) => {
+        const data={msg:"that's fresh"};
+        res.send({data});
     });
 };
