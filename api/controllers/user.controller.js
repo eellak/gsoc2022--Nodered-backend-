@@ -70,100 +70,116 @@ userLogout = (req, res) => {
 //current
 //create
 createFresh = (req,res) => {
- const username =req.locals.username;
- let port;
- User.findOne({username:username}).then(function(err,user){
- port = user.port;
- });
-  
+ const email =res.locals.email;
+ User.findOne({email:email},function(err,user){
+  if(err) return res.send("mongoerror");
+  const port = user.port;
+ const username = user.username;
+ //.catch(err => console.log(err)).finally(() => res.send({msg:"mongo error"}));
  docker.createContainer({
-  HostConfig:{
-  PortBindings:{
+   HostConfig:{
+     PortBindings:{
     "1880/tcp":[{HostPort:port}]//variable ports
   }
 },
-  Image:'nodered/node-red',
+Image:'nodered/node-red',
   Cmd:['/bin/bash'],
   name: `${username}`
   ,
   ExposedPorts: {
-     "1880/tcp": {}
+    "1880/tcp": {}
    }
  }
   ).then(function(container){
-     return container.start();//about err
+    return container.start();//about err
   });
-    res.data={port:port};
-    res.send({
-      success:true,msg:"successful"
-    });
+  res.data={port:port};
+  res.send({
+    success:true,msg:"successful"
+  });
+});
 };
 
 //save or discard
 const publicpath="./neu";
-stop = (req,res) => {
+stopContainer = (req,res) => {
   //save,discard
-  const cont = req.locals.username;
-  let errors = [];
-  
-  if(req.locals.annotation){
-    const InstancePath=`./${req.locals.username}/${req.locals.annotation}`;
+  const annotation = req.body.annotation;
+
+  const email = res.locals.email;
+  User.findOne({email:email},function(err,user){
+
+    let errors = [];
+    
+    if(annotation){
+    const InstancePath=`./data/${user.username}/${annotation}`;
     
     // check in db for similar name and store in existing;
   const existing = fs.existsSync(`${InstancePath}`);
-  if(existing&&!req.locals.edit)
-  return res.send({success:false,msg:"overwrite warning"});
-  if(!existing){
-    fs.mkdirSync(`${InstancePath}`,(err) => console.log(err));
-     
-  }
-
+  if(existing)//&&!req.locals.edit)
+  return res.send({success:false,msg:"overwrite warning"});//EDIT
+  if(!existing)
+  {
+    
+    
+    fs.mkdirSync(`${InstancePath}`);
+  
   // Saving flows
-  execSync(`docker cp ${cont}:"./data/flows.json" "${InstancePath}"`);
+  execSync(`docker cp ${user.username}:"./data/flows.json" "${InstancePath}"`);
   
   //Saving nodes
-  execSync(`docker cp ${cont}:"./data/package.json" "${InstancePath}"`);
-  let rawdata = fs.readFileSync(`${InstancePath}/package.json`);
-  let dependencies = JSON.parse(rawdata).dependencies;
-  fs.writeFileSync(`${InstancePath}/nodes.json`,JSON.stringify(dependencies),function(err){
-    if(err)console.log(err);
-  });
-  fs.unlinkSync(`${InstancePath}/package.json`,function(err){
-    if(err)console.log(err);
-  });
+  execSync(`docker cp ${user.username}:"./data/package.json" "${InstancePath}"`);
 
-  User.findOneAndUpdate({username:cont},{$push:{
+    let rawdata = fs.readFileSync(`${InstancePath}/package.json`);
+    let dependencies = JSON.parse(rawdata).dependencies;
+    fs.writeFileSync(`${InstancePath}/nodes.json`,JSON.stringify(dependencies),function(err){
+      if(err)console.log(err);
+    });
+    fs.unlinkSync(`${InstancePath}/package.json`,function(err){
+      if(err)console.log(err);
+    });
+    
+  
+  User.findOneAndUpdate({username:user.username},{$push:{
     instances:{
-      annotation:req.locals.annotation,
-      accessibility:req.locals.accessibility
+      annotation:annotation,
+      accessibility:req.locals.accessibility||"public",
     }
-  }}).execSync((err,user)=>{
-    if(err)console.log(err);
-    else
-    res.send({success:true});//to be completed
-  });
+  }});//anything better?
+  
+  // .exec((err,user)=>{
+    //   if(err)console.log(err);
+    //   else
+    //   res.send({success:true});//to be completed
+    // });
 
+    
+}
+  
 }
 
-  //kill container
-  const container = docker.getContainer(cont);
-  container.remove({force: true},function(err){
-    if(err)console.log(err);
-  });
+//kill container
+const container = docker.getContainer(user.username);
+container.remove({force: true},function(err){
+  if(err)console.log(err);
+});
+
+
+});
 };
 
 cloneInstances = (req,res) => {
-const cont = req.locals.username;
-let annotations = req.locals.annotations;//[{username:xxx,annotation:yyy}]
+const cont = req.body.username;
+let annotations = req.body.annotations;//[{username:xxx,annotation:yyy}]
 
 let newflow={};
 let newnode={};
 //Loop for accumulating flows and nodes
 for(let i in annotations){
-let rawdata = fs.readFileSync(`./${annotations[i].username}/${annotations[i].annotation}/flows.json`);
+let rawdata = fs.readFileSync(`./data/${annotations[i].username}/${annotations[i].annotation}/flows.json`);
 const flow = JSON.parse(rawdata);
 
-rawdata = fs.readFileSync(`./${annotations[i].username}/${annotations[i].annotation}/nodes.json`);
+rawdata = fs.readFileSync(`./data/${annotations[i].username}/${annotations[i].annotation}/nodes.json`);
 const node = JSON.parse(rawdata);
 
 Object.assign(newflow,flow);
@@ -188,7 +204,7 @@ for(let i in newnode){
   };
   //restarting the container to get the additions working
   const container = docker.getContainer({cont});
-  container.restart((err)=>console.log(err)).then((err)=>{
+  container.restart((err)=>console.log(err)).then((err)=>{ //problem ?
     if(err)console.log(err);
     else
     res.send({success:true,msg:"send port/url"});
@@ -196,4 +212,4 @@ for(let i in newnode){
 
 };
 
-module.exports = {dashboard, userLogout};
+module.exports = {dashboard, userLogout,createFresh,stopContainer,cloneInstances};

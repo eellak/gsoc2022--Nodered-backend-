@@ -20,8 +20,6 @@ module.exports = function(app) {
     app.get("/api/temp",(req,res) => {
         res.send("hello from apI");
     });
-    app.get("/api/fresh",(req,res) => {
-        const data={msg:"that's fresh"};
-        res.send({data});
-    });
+    app.get("/api/create-fresh",[authJwt] ,controller.createFresh);
+    app.post("/api/stop",[authJwt] ,controller.stopContainer);
 };

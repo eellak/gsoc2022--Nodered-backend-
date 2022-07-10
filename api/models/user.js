@@ -14,7 +14,8 @@ var UserSchema = new mongoose.Schema({
     port:{
         type:String,
         unique:true,
-        required:true,
+        trim: true,
+        // required:true,
     }
     ,
     email: {

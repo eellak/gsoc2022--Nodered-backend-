@@ -1,7 +1,7 @@
 var bodyparser = require("body-parser");
 var config = require("../config.js");
 var { verifySignUp } = require("../middlewares");
-
+var {exec} = require('node:child_process');
 
 
 var jwt = require('jsonwebtoken'),
@@ -19,10 +19,13 @@ exports.userRegister = function (req,res,next){
           const user = new User({
             email: req.body.email,
             password: bcrypt.hashSync(req.body.password,10),
-            toc: ""
+            toc: "",
+            port: req.body.port,
+            username: req.body.username
           });
          user.save((err, user) => {
-
+          if(err)console.log(err);
+          exec(`mkdir "./data/${req.body.username}"`,err => console.log(err));
            next();
          });
 
