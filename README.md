@@ -30,3 +30,10 @@ dockerode API used for creating fresh containers,
 child process, "exec" method, used for saving data(flows and dependencies) while killing containers and transferring the same when cloning request is made. Cloning is done in 2 steps- merging the various flow files, installing all required nodes/modules inside container.
 
 NOTE- each user is limited to be able to run only one container at a time on the server, this restriction can be modified if required. Currently each user upon registration is assigned a unique port on the server where his/her containers are going to listen at.
+
+Current registration -> the user needs to provide a uername(unique name of directory in api/data) and a port number, via request body.
+USER DATA -> api/data/`${username}`/ contains all the user created annotations, with 2 json files each, flows.json and nodes.json.
+for TESTING -> register and make a get call at api/create-fresh, then to stop, make a post call at api/stop along with a annotation in request body, if user wants to save the instance.
+
+
+#Readme to be restructured... 
