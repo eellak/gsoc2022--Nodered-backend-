@@ -1,15 +1,15 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-Row= function(props){
+function Row(props){
     const [container, setContainer] = useState([]);//running container details
     const [error, setError] = useState(""); //api tells about container running limit
-    handleEdit= ()=>{
+    function handleEdit(){
         axios.put('').then((response) => setContainer(response.data.path)).catch((err) => setError(err));
     };
-    handleStop= ()=>{
+    function handleStop(){
         
-        axios.put('').then((response) => setContainer(NULL)).catch((err) => console.log(err));
+        axios.put('').then((response) => setContainer(null)).catch((err) => console.log(err));
     };
     return(
         <tr>

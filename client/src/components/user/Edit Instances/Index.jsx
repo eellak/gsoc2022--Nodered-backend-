@@ -1,10 +1,13 @@
 import React, {useState, useEffect} from "react";
+import axios from "axios";
 import Row from "./Row"
 
-export default (props)=>{
+function EditInstances({setRunning}){
     const [instances, setInstance] = useState([]);
-    const [stop, setstop] = useState(0);    
-
+    // const [stop, setstop] = useState(0);    
+    // useEffect(async () =>{
+    //     return 8;
+    // });
  
 
     return(
@@ -20,7 +23,7 @@ export default (props)=>{
                     {
                      instances.map((element, index)=>{
                         return(
-                          <Row user={props.username} instance={element.name} index={index+1}></Row>
+                          <Row instance={element.name} index={index+1}></Row>
                         )
                      })   
                     }
@@ -29,3 +32,4 @@ export default (props)=>{
         </React.Fragment>
     );
 };
+export default EditInstances;

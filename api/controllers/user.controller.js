@@ -105,14 +105,14 @@ const publicpath="./neu";
 stopContainer = (req,res) => {
   //save,discard
   const annotation = req.body.annotation;
-
+  const username = res.locals.username;
   const email = res.locals.email;
   User.findOne({email:email},function(err,user){
 
     let errors = [];
     
     if(annotation){
-    const InstancePath=`./data/${user.username}/${annotation}`;
+    const InstancePath=`./data/${username}/${annotation}`;
     
     // check in db for similar name and store in existing;
   const existing = fs.existsSync(`${InstancePath}`);
@@ -124,13 +124,23 @@ stopContainer = (req,res) => {
     
     fs.mkdirSync(`${InstancePath}`);
   
-  // Saving flows
-  execSync(`docker cp ${user.username}:"./data/flows.json" "${InstancePath}"`);
+  //Saving flows
+  execSync(`docker cp ${username}:"./data/flows.json" "${InstancePath}"`);
   
-  //Saving nodes
-  execSync(`docker cp ${user.username}:"./data/package.json" "${InstancePath}"`);
+  //Editing flows
+  let rawdata = fs.readFileSync(`${InstancePath}/flows.json`);
+  let newflow = JSON.parse(rawdata);
+  newflow.foreach((element,index) =>{
+    if(element.type === "tab"){
+      newflow[index].label=annotation+"-"+newflow[index].label;
+    }
+  });
+  fs.writeFileSync(`${InstancePath}/flows.json`,JSON.stringify(newflow),(err)=> console.log(err));
 
-    let rawdata = fs.readFileSync(`${InstancePath}/package.json`);
+  //Saving nodes
+  execSync(`docker cp ${username}:"./data/package.json" "${InstancePath}"`);
+
+    rawdata = fs.readFileSync(`${InstancePath}/package.json`);
     let dependencies = JSON.parse(rawdata).dependencies;
     fs.writeFileSync(`${InstancePath}/nodes.json`,JSON.stringify(dependencies),function(err){
       if(err)console.log(err);
@@ -140,7 +150,7 @@ stopContainer = (req,res) => {
     });
     
   
-  User.findOneAndUpdate({username:user.username},{$push:{
+  User.findOneAndUpdate({email:email},{$push:{
     instances:{
       annotation:annotation,
       accessibility:req.locals.accessibility||"public",
@@ -159,7 +169,7 @@ stopContainer = (req,res) => {
 }
 
 //kill container
-const container = docker.getContainer(user.username);
+const container = docker.getContainer(username);
 container.remove({force: true},function(err){
   if(err)console.log(err);
 });
@@ -169,8 +179,8 @@ container.remove({force: true},function(err){
 };
 
 cloneInstances = (req,res) => {
-const cont = req.body.username;
-let annotations = req.body.annotations;//[{username:xxx,annotation:yyy}]
+const cont = res.locals.username;
+let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
 
 let newflow={};
 let newnode={};
@@ -212,4 +222,21 @@ for(let i in newnode){
 
 };
 
-module.exports = {dashboard, userLogout,createFresh,stopContainer,cloneInstances};
+availableInstances= (req,res)=>{
+const email = req.locals.email;
+User.find({email:{$ne:email}},{instances:1,_id:0},(err,docs)=>{
+if(err)console.log("db error");
+else{
+  let instances=[];
+  docs[instances].forEach(element => {
+    if(element.accessibility === "public"){
+      instances.push({username:docs[username],annotation:element[annotation]});
+    }
+  });
+  res.json(instances);
+}
+}); //null's required only when its coming in the middle
+
+};
+
+module.exports = {dashboard, userLogout,createFresh,stopContainer,cloneInstances,availableInstances};
