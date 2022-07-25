@@ -41,9 +41,9 @@ verifyToken = (req, res, next) => {
                 
                
             res.locals.email = decoded.data.email;
-            res.local.username = foundUser.username;
+            res.locals.username = foundUser.username;
             res.locals.token = token;
-            
+            // req.locals.accessibility;
             
                 next();
             }

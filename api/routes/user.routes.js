@@ -20,7 +20,7 @@ module.exports = function(app) {
     app.get("/api/temp",(req,res) => {
         res.send("hello from apI");
     });
-    app.get("/api/create-fresh",[authJwt], controller.createFresh);
+    app.get("/api/create-fresh",[authJwt], controller.createFresh,controller.cloneInstances);
     app.post("/api/stop",[authJwt] ,controller.stopContainer);
     app.get("/api/get-instances",[authJwt], controller.availableInstances);
 };

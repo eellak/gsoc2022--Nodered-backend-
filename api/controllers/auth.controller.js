@@ -11,7 +11,7 @@ var jwt = require('jsonwebtoken'),
 
 
 exports.userRegister = function (req,res,next){
-  
+  console.log(req);
   if(
         req.body &&
         req.body.email &&
@@ -36,6 +36,7 @@ exports.userRegister = function (req,res,next){
 };
 
 exports.userLogin = function (req,res){
+  console.log(req.body);
     if(req.body &&
       req.body.email &&
       req.body.password){
@@ -64,11 +65,11 @@ exports.userLogin = function (req,res){
               });
               if(!res.headersSent){
 
-                res.status(200).send({
+                res.status(200).json({
                   //   id: user._id, //huh??
-                  success:true,
-                  message:"Successfully registered/logged in",
-                  accessToken: token
+                  Headers:{
+                    Authorization:token
+                  }
                 });
               }
             }

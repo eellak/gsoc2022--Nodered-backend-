@@ -12,12 +12,14 @@ function Login(){
         // response => alert(response)
         // );
         const data={email:fieldValues.email,
-        password:fieldValues.password};
+        password:fieldValues.password};//console.log(JSON.stringify(data))
         // fetch('/api/temp').then(response=>console.log(response));
         fetch('/api/login',{method:'POST',
-    body:JSON.stringify(data)
+    body:JSON.stringify(data),
+    headers:{"Content-type":"application/json;charset=UTF-8"}
+
     }
-        ).then();
+        ).then(response => console.log(response.headers));
     };
     return(
         <form onSubmit={handleLogin}>
