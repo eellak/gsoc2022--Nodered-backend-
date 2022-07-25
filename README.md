@@ -22,10 +22,11 @@ The forms with checkboxes to display and collect data, their handlers etc. every
 
 Things that remain,
 - changing regular authentication to O-auth 2.0 to facilitate registering via gmail/github
-- configuring cors and fetch api to allow client and api to communicate with each other and exchange data from database
+- configuring cors and fetch api to allow client and api to communicate with each other and retrieve data from the database
 - A loading wheel- to prevent user from interacting with the page until container's being prepared in backend to then update the same page.
 
 Testing instructions
+
 have two postman tabs opened, 
 - one for register/login- to generate token for each call- since it refreshes after each auth request to the api & 
 - the second one to make create/stop calls using the body and Authorization(bearer token) sections of the request.
