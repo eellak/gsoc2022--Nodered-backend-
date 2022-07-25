@@ -25,7 +25,7 @@ Things that remain,
 - configuring cors and fetch api to allow client and api to communicate with each other and retrieve data from the database
 - A loading wheel- to prevent user from interacting with the page until container's being prepared in backend to then update the same page.
 
-Testing instructions
+Testing instructions(run- npm run server, in api directory)
 
 have two postman tabs opened, 
 - one for register/login- to generate token for each call- since it refreshes after each auth request to the api & 
