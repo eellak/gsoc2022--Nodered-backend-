@@ -11,7 +11,7 @@ all user data is stored in data directory, ex) data/username/userannotation/(2 f
 Hence, the above api facilitates all possible actions one could think of :), from creating and saving a new instance to cloning multiple instances of other users and saving even that.
 
 
-Everything controller has been tested with success.
+Everything in controller has been tested with success.
 
 now coming to using these routes,
 React Client (http://localhost:3000)
