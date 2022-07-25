@@ -17,12 +17,12 @@ now coming to using these routes,
 React Client (http://localhost:3000)
 
 All the components have been written- Edit instance & Clone instance are the ones which will allow user to -> create, edit, stop, clone || essentially everything the web application is about.
-Other than these, an about page along with using instructions is also there
+Other than these, an about page along with using instructions is also there.
 The forms with checkboxes to display and collect data, their handlers etc. everything is done.
 
 Things that remain,
 - changing regular authentication to O-auth 2.0 to facilitate registering via gmail/github
-- configuring cors and fetch api to allow client and api to communicate that and exchange data from database
+- configuring cors and fetch api to allow client and api to communicate with each other and exchange data from database
 - A loading wheel- to prevent user from interacting with the page until container's being prepared in backend to then update the same page.
 
 Testing instructions
