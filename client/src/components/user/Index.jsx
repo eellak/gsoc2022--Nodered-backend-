@@ -8,13 +8,15 @@ function UserPage() {
   function handleStop(){
 
   };
-  fetch("/api/fresh").then(response => response.text())
-  .then(data => console.log({data}));
+  // fetch("/api/login").then(response => response.text())
+  // .then(data => console.log({data}));
   //research
   return (
     <React.Fragment>
-    About Baloon, Edit Username pop up like spark
-
+    <button>About</button>
+    <br />
+    <button>Edit username</button><span>pop up as in spark site</span>
+    
     {
     (
       running.length==1?

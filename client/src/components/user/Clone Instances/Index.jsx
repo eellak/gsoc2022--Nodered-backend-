@@ -3,13 +3,33 @@ import axios from "axios";
 
 export default ({setRunning})=>{
     const [wasSubmitted, setWasSubmitted] = useState(false);
-    var list=[];//array of objects
-
+    const [list, setList] = useState([]);
+    // const [config,setConfig] = useState({});
+    // var list=[];//array of objects
+    
     useEffect(()=>{
-        if(list.length === 0){//required ?
-        axios.get('').then(response => {list=response.data}).catch(err => console.log(err));
-        }
+        // if(list.length === 0){//required ?
+            let token=JSON.parse(localStorage.getItem("token"));
+            let config = {headers:{authorization:token}};
+        axios.get('/get-instances',config).then(response => {
+            // list=response.data
+            console.log(response.data);
+            setList(response.data.instances);
+            localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
+        }).catch(err => console.log(err));
+        // }
     },[]);//run on only initial render || find more inf,, if refresh rerenders it's cool
+    
+    
+    // useEffect(()=>{
+    //     axios.post('/login',{email:"testemail",password:"testpassword"}).then(response => {
+    //         // list=response.data
+    //         // console.log(response.data.headers.authorization);
+    //         localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
+        
+    //     }).catch(err => console.log(err));
+
+    // },[]);
  
    function handleSubmit(e){
     e.preventDefault();

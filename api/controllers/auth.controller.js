@@ -36,7 +36,6 @@ exports.userRegister = function (req,res,next){
 };
 
 exports.userLogin = function (req,res){
-  console.log(req.body);
     if(req.body &&
       req.body.email &&
       req.body.password){
@@ -67,8 +66,8 @@ exports.userLogin = function (req,res){
 
                 res.status(200).json({
                   //   id: user._id, //huh??
-                  Headers:{
-                    Authorization:token
+                  headers:{
+                    authorization:token
                   }
                 });
               }

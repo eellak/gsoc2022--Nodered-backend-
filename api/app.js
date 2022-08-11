@@ -9,13 +9,12 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
 
-
 var routes = require("./routes/auth.routes");
 const { default: mongoose } = require('mongoose');
 
 //CORS
 var corsOptions = {
-  origin: "http://localhost:3001"
+  origin: "http://localhost:3000"
 };
 app.use(cors(corsOptions));
 

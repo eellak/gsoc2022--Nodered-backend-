@@ -13,13 +13,12 @@ function Login(){
         // );
         const data={email:fieldValues.email,
         password:fieldValues.password};//console.log(JSON.stringify(data))
-        // fetch('/api/temp').then(response=>console.log(response));
-        fetch('/api/login',{method:'POST',
-    body:JSON.stringify(data),
-    headers:{"Content-type":"application/json;charset=UTF-8"}
 
-    }
-        ).then(response => console.log(response.headers));
+        axios.post('/login',data).then(response =>{
+            console.log(response.data);
+            localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
+        }).catch(err => console.log(err));   
+        
     };
     return(
         <form onSubmit={handleLogin}>

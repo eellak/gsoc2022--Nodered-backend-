@@ -2,6 +2,8 @@ var User = require("../models/user");
 var config = require("../config.js");
 const {exec,execSync} = require('node:child_process');
 const fs = require('fs');
+const util = require('util');
+const Exec = util.promisify(exec);
 var Docker = require('dockerode');
 const docker = new Docker({
   host:'http://localhost',
@@ -116,7 +118,7 @@ stopContainer = (req,res) => {
 
     let errors = [];
     
-    if(annotation){
+  if(annotation){
     const InstancePath=`../data/${username}/${annotation}`;
     
     // check in db for similar name and store in existing;
@@ -140,26 +142,29 @@ stopContainer = (req,res) => {
       // console.log("done");//to be completed
     });  
   }
-    
   
+  async function FLOW(){
   //Saving flows
-  exec(`docker cp ${username}:"../data/flows.json" "${InstancePath}"`,(err)=>{
+let results = await Promise.all([exec(`docker cp ${username}:"../data/flows.json" "${InstancePath}"`,(err)=>{
     if(err)console.log(err);
-    else if(!res.locals.edit){
+    else {
         //Editing flows
   let rawdata = fs.readFileSync(`${InstancePath}/flows.json`);
   let newflow = JSON.parse(rawdata);//console.log(newflow);
+
   newflow.forEach((element,index) =>{
     if(element.type === "tab"){
-      newflow[index].label=annotation+"-"+newflow[index].label;
+      newflow[index].label=annotation+"-"+"Flow "+(index+1);
+    }
+    else if(element.type === 'link call'){
+      console.log(element.wires);
     }
   });
   fs.writeFileSync(`${InstancePath}/flows.json`,JSON.stringify(newflow),(err)=> console.log(err));
     }
-  });
+  }),
   
-
-
+  
   //Saving nodes
   exec(`docker cp ${username}:"../data/package.json" "${InstancePath}"`,(err)=>{
     if(err)console.log(err);
@@ -168,27 +173,40 @@ stopContainer = (req,res) => {
       let nodes=[];
       rawdata= JSON.parse(rawdata);
       if(rawdata.dependencies){
-      let dependencies = rawdata.dependencies;
+        let dependencies = rawdata.dependencies;
       for(let i in dependencies)nodes.push(i);
-      }
-      fs.writeFileSync(`${InstancePath}/nodes.json`,JSON.stringify(nodes),function(err){
-        if(err)console.log(err);
-      });
+    }
+    fs.writeFileSync(`${InstancePath}/nodes.json`,JSON.stringify(nodes),function(err){
+      if(err)console.log(err);
+    });
       fs.unlinkSync(`${InstancePath}/package.json`,function(err){
         if(err)console.log(err);
       });
       
     }
-  });
+  })]);
+  //kill container
+const container = docker.getContainer(username);
+container.remove({force: true},function(err){
+  if(err)console.log(err);
+});
+res.json({success:true, headers:{
+  authorization:res.locals.token
+}});
 }
-
+FLOW();
+  }
+else{
 //kill container
 const container = docker.getContainer(username);
 container.remove({force: true},function(err){
   if(err)console.log(err);
 });
-res.send({success:true});
+res.json({success:true, headers:{
+  authorization:res.locals.token
+}});
 
+}
 // });
 };
 
@@ -196,10 +214,16 @@ cloneInstances = (req,res) => {
 const cont = res.locals.username;
 const username = res.locals.username;
 let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
-
+if(!annotations){
+  return res.json({
+    headers:{
+      authorization:res.locals.token
+    }
+  });
+}
 let newflow=[];
 let newnode=[];
-console.log(annotations);
+
 
 //Loop for accumulating flows and nodes
 let c=0;
@@ -224,7 +248,7 @@ fs.writeFileSync(userpath, JSON.stringify(newflow))
 
 exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
     if(err)console.log(err);
-    fs.unlink(userpath,err=>console.log(err));
+    fs.unlink(userpath,err=>console.log(err));//fix
   });
 
 // fs.writeFileSync(userpath, JSON.stringify(newnode), (err) => console.log(err));
@@ -235,31 +259,68 @@ exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
 for(let i=0;i<newnode.length;i++){
   execSync(`docker exec -d --workdir //data/ ${cont} npm install ${node[i]}`);
   }
+  console.log("reached");
   //restarting the container to get the additions working
-  docker.getContainer({cont},(err, container)=>{
-      container.restart((err)=>console.log(err)).then((err)=>{ //problem ?
+  
+  const container=docker.getContainer(cont);
+      container.restart((err)=>{ //problem ?
       if(err)console.log(err);
       else
-      res.send({success:true,msg:"send port/url"});
+      res.json({success:true,msg:"send port/url", headers:{
+        authorization:res.locals.token
+      }});
     });
-  });
+  
+
     
 };
 
 availableInstances= (req,res)=>{
+  // console.log(req.query);
 const email = res.locals.email;
-User.find({email:{$ne:email}},{instances:1,_id:0},(err,docs)=>{
+let personal=req.query.personal;
+// if(req.query.personal)personal=req.que.personal;
+if(!personal){
+User.find({email:{$ne:email}},{username:1,instances:1,_id:0},(err,docs)=>{
 if(err)console.log("db error");
 else{
   let instances=[];
-  docs[instances].forEach(element => {
+  docs.forEach(user => {
+    user.instances.forEach(element=>{
     if(element.accessibility === "public"){
-      instances.push({username:docs[username],annotation:element[annotation]});
+      instances.push({username:user.username,annotation:element.annotation});
     }
+  }
+    )
+  
   });
-  res.json(instances);
+  res.json({
+    headers:{
+    authorization:res.locals.token
+  },
+  instances:instances
+});
 }
-}); //null's required only when its coming in the middle
+}); //null's required only when its coming in the middle (props/data/cb passed to find)
+}
+else{
+   User.findOne({email:email},{username:1,instances:1,_id:0},(err,user)=>{
+    if(err)console.log("db error");
+    else{
+      let instances=[];
+      console.log(user);
+      user.instances.forEach(element =>{
+        instances.push({username:user.username,annotation:element.annotation});
+      })
+      res.json({
+        headers:{
+          authorization:res.locals.token
+        },
+        instances:instances
+      });
+    }
+   })
+}
 };
 
 module.exports = {dashboard, userLogout,createFresh,stopContainer,cloneInstances,availableInstances};
