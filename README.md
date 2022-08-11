@@ -1,39 +1,38 @@
 # gsoc2022--Nodered-WebApp-
-To test the current api - 
 
-cd into it and run "npm start".
+Express API (http://localhost:3001/api)
+- /register || registers users with unique username and port no.
+- /create-fresh || creates fresh instance/container => request's body contains "selections" array with element format {username:"",annotation:"}
+  if empty, it creates a new container, otherwise it creates a cloned container => for better insight check user.routes.js
+- /stop || stops/kills container, if "annotation" is mentioned in req.body, it saves the instance in user's directory.
 
-check routes available in routes directory.
+all user data is stored in data directory, ex) data/username/userannotation/(2 files flows.json, nodes.json)
 
-Requests not requiring authorization,
-Register/login post requests require two key-value pairs - email, and password.
-
-Authorization requests,
-logout post request requires email and token,
-and dashboard get request just requires "bearer" token inside "Authorization part" of header- client receives a fresh/updated access token for every request, with one day expiry.
-
-React Client-
-will have all the pages/react_routes under src/components,
-will  use axios to make api calls using FetchAPI.js under  src/utils.
-
-deployment related Api calls- 
-no persistance via volumes,
-{
-flows.json will be transferred to host via, "cp" command, for storing,
-package.json will be transferred to host via, "cp" command => dependencies will be read, and stored => package.json will be deleted.
-}
-the above steps will persist all necessary minimal info to recreate the instance.
-This procedure has an advantage over the one using volumes -> multiple available annotated deployments can be packaged and pulled up in a single container.
-
-deployment related controllers' complete final implemenation- 
-dockerode API used for creating fresh containers,
-child process, "exec" method, used for saving data(flows and dependencies) while killing containers and transferring the same when cloning request is made. Cloning is done in 2 steps- merging the various flow files, installing all required nodes/modules inside container.
-
-NOTE- each user is limited to be able to run only one container at a time on the server, this restriction can be modified if required. Currently each user upon registration is assigned a unique port on the server where his/her containers are going to listen at.
-
-Current registration -> the user needs to provide a uername(unique name of directory in api/data) and a port number, via request body.
-USER DATA -> api/data/`${username}`/ contains all the user created annotations, with 2 json files each, flows.json and nodes.json.
-for TESTING -> register and make a get call at api/create-fresh, then to stop, make a post call at api/stop along with a annotation in request body, if user wants to save the instance.
+Hence, the above api facilitates all possible actions one could think of :), from creating and saving a new instance to cloning multiple instances of other users and saving even that.
 
 
-#Readme to be restructured... 
+Everything in controller has been tested with success.
+
+now coming to using these routes,
+React Client (http://localhost:3000)
+
+All the components have been written- Edit instance & Clone instance are the ones which will allow user to -> create, edit, stop, clone || essentially everything the web application is about.
+Other than these, an about page along with using instructions is also there.
+The forms with checkboxes to display and collect data, their handlers etc. everything is done.
+
+Things that remain,
+- changing regular authentication to O-auth 2.0 to facilitate registering via gmail/github
+- configuring cors and fetch api to allow client and api to communicate with each other and retrieve data from the database
+- A loading wheel- to prevent user from interacting with the page until container's being prepared in backend to then update the same page.
+
+Testing instructions(run- npm run server, in api directory)
+
+have two postman tabs opened, 
+- one for register/login- to generate token for each call- since it refreshes after each auth request to the api & 
+- the second one to make create/stop calls using the body and Authorization(bearer token) sections of the request.
+
+Important Note 
+- after starting a container, create another one for the same user only after stopping the previous one, because each user has only one unique port in the server to begin with
+- use desktop Postman app, other versions dont support sending array("selections" in our case) with request body or have complicated ways of achieving it.
+
+Thus, 85-90% of the work's done. Any remaining time shall be used to glamourize the Web app frontend further :)
