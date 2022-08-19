@@ -74,7 +74,7 @@ userLogout = (req, res) => {
 //create
 createFresh = (req,res,next) => {
  const email =res.locals.email;
- User.findOne({email:email},function(err,user){
+ User.findOneAndUpdate({email:email},{occupied:true},function(err,user){
   if(err) return res.send("mongoerror");
   const port = user.port;
  const username = user.username;
@@ -117,7 +117,7 @@ stopContainer = (req,res) => {
   // User.findOne({email:email},function(err,user){
 
     let errors = [];
-    
+    User.findOneAndUpdate({email:email},{occupied:false},(err)=>console.log(err));
   if(annotation){
     const InstancePath=`../data/${username}/${annotation}`;
     
@@ -144,13 +144,14 @@ stopContainer = (req,res) => {
   }
   
   async function FLOW(){
-  //Saving flows
+  let newflow,rawdata,nodes;
+    //Saving flows
 let results = await Promise.all([exec(`docker cp ${username}:"../data/flows.json" "${InstancePath}"`,(err)=>{
     if(err)console.log(err);
     else {
         //Editing flows
-  let rawdata = fs.readFileSync(`${InstancePath}/flows.json`);
-  let newflow = JSON.parse(rawdata);//console.log(newflow);
+  rawdata = fs.readFileSync(`${InstancePath}/flows.json`);
+  newflow = JSON.parse(rawdata);//console.log(newflow);
 
   newflow.forEach((element,index) =>{
     if(element.type === "tab"){
@@ -161,31 +162,38 @@ let results = await Promise.all([exec(`docker cp ${username}:"../data/flows.json
     }
   });
   fs.writeFileSync(`${InstancePath}/flows.json`,JSON.stringify(newflow),(err)=> console.log(err));
-    }
-  }),
-  
-  
-  //Saving nodes
-  exec(`docker cp ${username}:"../data/package.json" "${InstancePath}"`,(err)=>{
-    if(err)console.log(err);
-    else{
-      let rawdata = fs.readFileSync(`${InstancePath}/package.json`);
-      let nodes=[];
-      rawdata= JSON.parse(rawdata);
-      if(rawdata.dependencies){
-        let dependencies = rawdata.dependencies;
+}
+}),
+
+
+//Saving nodes
+exec(`docker cp ${username}:"../data/package.json" "${InstancePath}"`,(err)=>{
+  if(err)console.log(err);
+  else{
+    rawdata = fs.readFileSync(`${InstancePath}/package.json`);
+    nodes=[];
+    rawdata= JSON.parse(rawdata);
+    if(rawdata.dependencies){
+      let dependencies = rawdata.dependencies;
       for(let i in dependencies)nodes.push(i);
     }
     fs.writeFileSync(`${InstancePath}/nodes.json`,JSON.stringify(nodes),function(err){
       if(err)console.log(err);
     });
-      fs.unlinkSync(`${InstancePath}/package.json`,function(err){
-        if(err)console.log(err);
-      });
-      
-    }
-  })]);
-  //kill container
+    fs.unlinkSync(`${InstancePath}/package.json`,function(err){
+      if(err)console.log(err);
+    });
+    
+  }
+})]);
+
+//backing up in mongodb
+User.findOneAndUpdate({email:email,"instances.annotation":annotation},{"$set":{"instances.$.flows":newflow,"instances.$.nodes":nodes}},{upsert:true},(err,user)=>{
+  console.log(err);
+  console.log(user);
+});    
+
+//kill container
 const container = docker.getContainer(username);
 container.remove({force: true},function(err){
   if(err)console.log(err);
@@ -211,14 +219,16 @@ res.json({success:true, headers:{
 };
 
 cloneInstances = (req,res) => {
+  try{
 const cont = res.locals.username;
 const username = res.locals.username;
 let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
-if(!annotations){
+if(annotations.length===0){
   return res.json({
     headers:{
       authorization:res.locals.token
-    }
+    },
+    msg:"createdBaby"
   });
 }
 let newflow=[];
@@ -235,51 +245,102 @@ rawdata = fs.readFileSync(`../data/${annotations[i].username}/${annotations[i].a
 const node = JSON.parse(rawdata);
 
 for(let j=0;j<flow.length;j++){
-  flow[j].id+=`${c++}`;
+  flow[j].id+=`${c}`;
+  if(flow[j].z){
+    flow[j].z+=c;
+  }
+  if(flow[j].wires){
+    for(let w=0;w<flow[j].wires.length;w++){
+      flow[j].wires[w]+=c;
+    }
+  }
   newflow.push(flow[j]);
 }
 for(let j=0;j<node.length;j++){
   newnode.push(node[j]);
 }
+c++;
 }
 
 let userpath = `../data/${username}/flows.json`;
 fs.writeFileSync(userpath, JSON.stringify(newflow))
 
-exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
+Exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
     if(err)console.log(err);
     fs.unlink(userpath,err=>console.log(err));//fix
+    
+    // fs.writeFileSync(userpath, JSON.stringify(newnode), (err) => console.log(err));
+    // let rawdata = fs.readFileSync(userpath);
+    // const dependencies = JSON.parse(rawdata);
+    
+    //LOOP-2>installing npm node modules inside container
+    let arr=[];
+    for(let i=0;i<newnode.length;i++){
+      const cmnd = `docker exec -d --workdir //data/ ${cont} npm install ${newnode[i]}`
+    execSync(cmnd);
+    }//console.log(arr);
+    
+      // Exec(`docker restart ${cont}`).then(()=>{
+      //   if(err)console.log(err);
+      //   else
+      //   res.json({success:true,msg:"send port/url", headers:{
+      //       authorization:res.locals.token
+      //     }});
+      //   });
+    
   });
-
-// fs.writeFileSync(userpath, JSON.stringify(newnode), (err) => console.log(err));
-// let rawdata = fs.readFileSync(userpath);
-// const dependencies = JSON.parse(rawdata);
-
-//LOOP-2>installing npm node modules inside container
-for(let i=0;i<newnode.length;i++){
-  execSync(`docker exec -d --workdir //data/ ${cont} npm install ${node[i]}`);
-  }
-  console.log("reached");
-  //restarting the container to get the additions working
-  
-  const container=docker.getContainer(cont);
-      container.restart((err)=>{ //problem ?
-      if(err)console.log(err);
-      else
-      res.json({success:true,msg:"send port/url", headers:{
-        authorization:res.locals.token
-      }});
-    });
-  
-
+  res.json({success:true,headers:{authorization:res.locals.token}});
+    //restarting the container to get the additions working
+    
+    // const container=docker.getContainer(cont);
+    //     container.restart((err)=>{ //problem ?
+    //     if(err)console.log(err);
+    //     else
+    //     res.json({success:true,msg:"send port/url", headers:{
+      //       authorization:res.locals.token
+      //     }});
+      //   });
+      // res.json({bomb:true});
+      
+    }catch(err){console.log(err)};
     
 };
+deleteInstance = (req,res)=>{
+  const email = res.locals.email;
+  const username= res.locals.username;
+  const annotation = req.body.annotation[0].annotation;
+
+  User.findOneAndUpdate({email:email},{$pull:
+    {
+    instances:{
+      annotation:annotation,
+    }
+    }})//anything better?
+  
+  .exec((err,user)=>{
+      if(err)console.log(err);
+      // else
+      // console.log("done");//to be completed
+    }); 
+    fs.rmdir(`../data/${username}/${annotation}`,{recursive:true},(err)=>console.log(err));
+    res.json({
+      headers:{
+        authorization:res.locals.token
+      },
+      msg:"deleted"
+    })
+
+}
 
 availableInstances= (req,res)=>{
   // console.log(req.query);
 const email = res.locals.email;
 let personal=req.query.personal;
 // if(req.query.personal)personal=req.que.personal;
+let occupied;
+User.find({email:email},(err,user)=>{
+  occupied=user.occupied;
+})
 if(!personal){
 User.find({email:{$ne:email}},{username:1,instances:1,_id:0},(err,docs)=>{
 if(err)console.log("db error");
@@ -298,7 +359,8 @@ else{
     headers:{
     authorization:res.locals.token
   },
-  instances:instances
+  instances:instances,
+  occupied:occupied
 });
 }
 }); //null's required only when its coming in the middle (props/data/cb passed to find)
@@ -316,11 +378,21 @@ else{
         headers:{
           authorization:res.locals.token
         },
-        instances:instances
+        instances:instances,
+        occupied:occupied
       });
     }
    })
 }
 };
+userState = (req,res)=>{
+const email = res.locals.email;
+User.findOne({email:email},{occupied:1,_id:0},(err,user)=>{
+if(err)console.log(err);
+else{
+  res.json({headers:{authorization:res.locals.token},occupied:user.occupied});
+}
+});
+};
 
-module.exports = {dashboard, userLogout,createFresh,stopContainer,cloneInstances,availableInstances};
+module.exports = {dashboard, userLogout,createFresh,stopContainer,cloneInstances,availableInstances,deleteInstance,userState};

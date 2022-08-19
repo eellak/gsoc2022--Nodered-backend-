@@ -16,6 +16,10 @@ var UserSchema = new mongoose.Schema({
         unique:true,
         trim: true,
         // required:true,
+    },
+    occupied:{
+        type:Boolean,
+        default:false
     }
     ,
     email: {
@@ -40,7 +44,8 @@ var UserSchema = new mongoose.Schema({
         accessibility:{
             type:String
         },
-        
+        flows:{type:Object},
+        nodes:{type:Object}
         }
     ]
 

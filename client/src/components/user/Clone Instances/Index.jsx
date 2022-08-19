@@ -1,7 +1,9 @@
 import React, {useState, useEffect} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
-export default ({setRunning})=>{
+export default ({setRunning,setLoader})=>{
+    const navigate = useNavigate();
     const [wasSubmitted, setWasSubmitted] = useState(false);
     const [list, setList] = useState([]);
     // const [config,setConfig] = useState({});
@@ -13,7 +15,7 @@ export default ({setRunning})=>{
             let config = {headers:{authorization:token}};
         axios.get('/get-instances',config).then(response => {
             // list=response.data
-            console.log(response.data);
+            // console.log(response.data);
             setList(response.data.instances);
             localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
         }).catch(err => console.log(err));
@@ -32,6 +34,7 @@ export default ({setRunning})=>{
     // },[]);
  
    function handleSubmit(e){
+       setLoader(true);
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
     const fieldValues = Object.fromEntries(formData.entries());
@@ -39,12 +42,16 @@ export default ({setRunning})=>{
     for(let i in fieldValues){
         selections.push({username:list[i].user,annotation:list[i].instance});
     }
-    axios({
-        method:'post',
-        url:'/clone-instances',
-        data: selections
-    });
-    setWasSubmitted(true);
+    let token=JSON.parse(localStorage.getItem("token"));
+    let config = {headers:{authorization:token}};
+axios.post('/create-fresh',{selections:selections},config).then(response => {
+    console.log(response.data);
+    localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
+    setLoader(false);
+    navigate('/user-page');
+}).catch(err => console.log(err));
+// setRunning(true);
+    // setWasSubmitted(true);
     }
 //Loader->when container running-> setwassubmitted
     return(

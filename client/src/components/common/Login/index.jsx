@@ -1,9 +1,9 @@
 import axios from "axios";
 // import { response } from "../../../../../api/app";
-
+import {useNavigate} from 'react-router-dom';
 
 function Login(){
-
+const navigate = useNavigate();
     function handleLogin(e){
         e.preventDefault();
         const formData = new FormData(e.currentTarget);
@@ -15,9 +15,10 @@ function Login(){
         password:fieldValues.password};//console.log(JSON.stringify(data))
 
         axios.post('/login',data).then(response =>{
-            console.log(response.data);
+            // console.log(response.data);
             localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
-        }).catch(err => console.log(err));   
+            navigate('/user-page');
+        }).catch(err => console.log(err));
         
     };
     return(
