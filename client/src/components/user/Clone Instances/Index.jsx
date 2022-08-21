@@ -40,7 +40,7 @@ export default ({setRunning,setLoader})=>{
     const fieldValues = Object.fromEntries(formData.entries());
     let selections=[];
     for(let i in fieldValues){
-        selections.push({username:list[i].user,annotation:list[i].instance});
+        selections.push({username:list[i].username,annotation:list[i].annotation});
     }
     let token=JSON.parse(localStorage.getItem("token"));
     let config = {headers:{authorization:token}};

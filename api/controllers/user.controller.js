@@ -152,10 +152,10 @@ let results = await Promise.all([exec(`docker cp ${username}:"../data/flows.json
         //Editing flows
   rawdata = fs.readFileSync(`${InstancePath}/flows.json`);
   newflow = JSON.parse(rawdata);//console.log(newflow);
-
+let c=0;
   newflow.forEach((element,index) =>{
     if(element.type === "tab"){
-      newflow[index].label=annotation+"-"+"Flow "+(index+1);
+      newflow[index].label=annotation+"-"+"Flow "+(c+1);c++;
     }
     else if(element.type === 'link call'){
       console.log(element.wires);
@@ -233,7 +233,6 @@ if(annotations.length===0){
 }
 let newflow=[];
 let newnode=[];
-
 
 //Loop for accumulating flows and nodes
 let c=0;
