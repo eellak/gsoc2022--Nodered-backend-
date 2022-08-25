@@ -8,7 +8,7 @@ var jwt = require('jsonwebtoken'),
     bcrypt = require('bcrypt'),
     User = require("../models/user");
 
-
+const TOKEN_EXPIRATION = 1000 * 60 * 60 * 24
 
 exports.userRegister = function (req,res,next){
   console.log(req);
@@ -60,7 +60,7 @@ exports.userLogin = function (req,res){
                 toc: date.toString(),    //time of creation
               };
               var token = jwt.sign({ data: user}, config.secret,{
-                expiresIn: 1000*60*60*24,
+                expiresIn: TOKEN_EXPIRATION,
               });
               if(!res.headersSent){
 
