@@ -63,7 +63,7 @@ axios.post('/create-fresh',{selections:selections},config).then(response => {
                 <thead>
                     <th>S.No.</th>
                     <th>User: Instance Name</th>
-                    <th>Clone</th>
+                    <th></th>
                 </thead>
                 <tbody>
                     {
@@ -80,7 +80,7 @@ axios.post('/create-fresh',{selections:selections},config).then(response => {
                     }
                 </tbody>
             </table>
-            <button type="submit">Submit</button>
+            <button type="submit">Create</button>
         </form>
     </React.Fragment>
     );

@@ -14,9 +14,9 @@ const { verifySignUp } = require("../middlewares");
 
 //auth-routes
 
-router.post("/api/login", controller.userLogin);
+// router.post("/api/login", controller.userLogin);
 
-router.post("/api/register", controller.userRegister, controller.userLogin);
+router.post("/api/login", controller.userRegister, controller.userLogin);
 
 module.exports = router;
 

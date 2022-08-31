@@ -6,55 +6,87 @@ var {exec} = require('node:child_process');
 
 var jwt = require('jsonwebtoken'),
     bcrypt = require('bcrypt'),
-    User = require("../models/user");
+    User = require("../models/user"),
+    Ports = require("../models/port");
 
 
-
-exports.userRegister = function (req,res,next){
-  console.log(req);
+try{
+exports.userRegister = async function (req,res,next){
   if(
         req.body &&
-        req.body.email &&
-        req.body.password){
-          const user = new User({
-            email: req.body.email,
-            password: bcrypt.hashSync(req.body.password,10),
-            toc: "",
-            port: req.body.port,
-            username: req.body.username
-          });
-         user.save((err, user) => {
-          if(err)console.log(err);
-          exec(`mkdir "./data/${req.body.username}"`,err => console.log(err));
-           next();
-         });
-
+        req.body.email){
+          let exists=false;
+          const email=req.body.email;
+          let username="";
+          let i=0;
+          while(i<email.length){
+            if(email[i] === '@'){
+              username+='A';
+            }
+            else if(email[i] === '.'){
+              username+='D';
+            }
+            else username+=email[i];
+            i++;
+          }
+           User.find({email:req.body.email},(err,docs)=>{
+            if(err)console.log(err);
+            else if(docs.length){
+              exists=true;
+            }
+            if(exists){
+              next();
+              return;
+            }
+            let curPort;
+           User.findOne({email:"ports"},(err,foundUser)=>{
+                if(err)console.log(err);
+                curPort=foundUser.port;
+                const user = new User({
+                email: req.body.email,
+                toc: "",
+                port: curPort,
+                username:username
+                });
+                curPort=parseInt(curPort,10);
+                curPort++;
+                User.findOneAndUpdate({email:"ports"},{port:curPort},(err,foundUser)=>{
+                if(err)console.log(err);
+                user.save((err, user) => {
+                  if(err)console.log(err);
+                  console.log(user.username);
+                  exec(`mkdir "../data/${user.username}"`,err => console.log(err));
+                  next();
+                });
+              });
+            });
+        });
+          
         }
         else
         res.send({success:false,message:"Form not filled!"});
     
 };
-
+}catch(err){console.log(err);}
 exports.userLogin = function (req,res){
     if(req.body &&
-      req.body.email &&
-      req.body.password){
+      req.body.email){
              
         User.findOne({email: req.body.email}, function(err,foundUser){
           if(err) {
             return res.send({message: err});
           } else {
             if(foundUser) {
-              if(!foundUser.comparePassword(req.body.password)){
-                return res.status(401).json({message: 'Wrong Password'});                
-              }
+              // if(!foundUser.comparePassword(req.body.password)){
+              //   return res.status(401).json({message: 'Wrong Password'});                
+              // }
               
               const date = new Date();
               foundUser.toc = date.toString();
               foundUser.save(function(err,user){
                 if(err){return res.send({success: false, message:"Error while saving doc"})}
               });
-              console.log(foundUser.toc);
+              // console.log(foundUser.toc);
               const user = {
                 email: foundUser.email,
                 toc: date.toString(),    //time of creation

@@ -29,10 +29,10 @@ var UserSchema = new mongoose.Schema({
         trim: true,
         required: true,
     },
-    password: {
-        type: String,
-        required: true,
-    },
+    // password: {
+    //     type: String,
+    //     required: true,
+    // },
     toc:{
         type: String,
         
@@ -53,8 +53,8 @@ var UserSchema = new mongoose.Schema({
 
 });
 
-UserSchema.methods.comparePassword = function(password) {
-    return bcrypt.compareSync(password, this.password);
-}
+// UserSchema.methods.comparePassword = function(password) {
+//     return bcrypt.compareSync(password, this.password);
+// }
 
 module.exports = mongoose.model("User",UserSchema);

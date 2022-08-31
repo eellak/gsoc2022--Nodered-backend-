@@ -111,7 +111,9 @@ Image:'nodered/node-red',
 const publicpath="./neu";
 stopContainer = (req,res) => {
   //save,discard
+  console.log(req.body);
   const annotation = req.body.annotation;
+  const accessibility = req.body.accessibility;
   const username = res.locals.username;
   const email = res.locals.email;
   // User.findOne({email:email},function(err,user){
@@ -132,7 +134,7 @@ stopContainer = (req,res) => {
     {
     instances:{
       annotation:annotation,
-      accessibility:"public",
+      accessibility:accessibility,
     }
     }})//anything better?
   
@@ -219,11 +221,11 @@ res.json({success:true, headers:{
 };
 
 cloneInstances = (req,res) => {
-  try{
-const cont = res.locals.username;
-const username = res.locals.username;
-let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
-if(annotations.length===0){
+  const cont = res.locals.username;
+  const username = res.locals.username;
+  let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
+  console.log(annotations);  
+if(annotations[0] === null){
   return res.json({
     headers:{
       authorization:res.locals.token
@@ -301,7 +303,7 @@ Exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
       //   });
       // res.json({bomb:true});
       
-    }catch(err){console.log(err)};
+
     
 };
 deleteInstance = (req,res)=>{
@@ -347,7 +349,7 @@ else{
   let instances=[];
   docs.forEach(user => {
     user.instances.forEach(element=>{
-    if(element.accessibility === "public"){
+    if(element.accessibility === "Public"){
       instances.push({username:user.username,annotation:element.annotation});
     }
   }
