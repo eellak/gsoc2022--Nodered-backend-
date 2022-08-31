@@ -1,6 +1,10 @@
 {
     "scripts": {
         "start":"cd api/ && npm install && npm run server",
-        "heroku-postbuild":"cd client/ && npm install && npm run build && npm start"
+        "heroku-postbuild":"cd client/ && npm install && npm start"
+    },
+    "engines": {
+        "node": "16.x",
+        "npm":"8.x"
     }
 }
