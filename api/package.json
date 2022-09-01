@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "server": "nodemon ./bin/www"
+    "server": "node ./bin/www"
   },
   "dependencies": {
     "babel": "^6.23.0",
