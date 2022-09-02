@@ -76,7 +76,7 @@ app.use(routes);
 //AUTHORIZED ROUTES
 require('./routes/user.routes')(app);
 
-const _dirname='../client';
+const _dirname='/app/client';
 
 app.use(express.static(path.join(_dirname, 'build')));
 app.get('/*', (req, res) => {
