@@ -1,7 +1,7 @@
 import axios from "axios";
 // import { response } from "../../../../../api/app";
 import {useNavigate} from 'react-router-dom';
-import Google from './google';
+import Google from './google.jsx';
 
 function Login(){
 const navigate = useNavigate();

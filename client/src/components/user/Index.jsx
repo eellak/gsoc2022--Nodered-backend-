@@ -1,7 +1,7 @@
 import React,{useState,useEffect} from 'react';
 import {Route, Routes,useNavigate} from "react-router-dom";
 import EditInstances from './Edit Instances/index.jsx';
-import CloneInstances from './Clone Instances';
+import CloneInstances from './Clone Instances/index.jsx';
 import axios from 'axios';
 
 function UserPage({setLoader}) {

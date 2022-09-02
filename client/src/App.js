@@ -1,10 +1,10 @@
 import {BrowserRouter, Route, Routes} from "react-router-dom"; 
 import logo from './logo.svg';
 import './App.css';
-import About from './components/common/About'
-import UserPage from './components/user'
+import About from './components/common/About/index.jsx'
+import UserPage from './components/user/index.jsx'
 // import EditInstances from "./components/user/Edit Instances/index";
-import Login from "./components/common/Login"
+import Login from "./components/common/Login/index.jsx"
 import { useState } from "react";
 
 function App() {
