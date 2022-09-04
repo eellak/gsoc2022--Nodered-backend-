@@ -1,6 +1,6 @@
 import  {React} from 'react';
 import {useNavigate} from 'react-router-dom';
-import Google from '../Login/google';
+import Google from '../Login/google.jsx';
 import axios from "axios";
 
 function About(){

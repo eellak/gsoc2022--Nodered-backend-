@@ -4,7 +4,6 @@ import './App.css';
 import About from './components/common/About/Index.jsx'
 import UserPage from './components/user/Index.jsx'
 // import EditInstances from "./components/user/Edit Instances/index";
-import Login from "./components/common/Login/Index.jsx"
 import { useState } from "react";
 
 function App() {
@@ -20,8 +19,6 @@ function App() {
         
         <Route index element={<About/>}/>
         {/* sign up/in-baloon OR link of dashboard-baloon */}
-
-        <Route path="login" element={<Login/>}/>
         
         <Route path="user-page/*" element={<UserPage setLoader={setLoader}/>} />
         {/* navigation page + createFresh + edit username */}
