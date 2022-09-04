@@ -2,5 +2,10 @@
     "scripts": {
         "start":"cd api/ && npm run server",
         "heroku-prebuild":"cd client/ && npm install && npm run build && cd .. && cd api/ && npm install"
+    },
+    "engines": {
+        "node": "16.x",
+        "npm":"8.x"
     }
+
 }
