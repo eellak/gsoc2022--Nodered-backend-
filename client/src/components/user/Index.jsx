@@ -14,7 +14,7 @@ function UserPage({setLoader}) {
     axios.get('/occupied',config).then(response=>{
       console.log(response.data.port);
       setRunning(response.data.occupied);
-      setAddress("http://localhost:"+response.data.port);
+      setAddress("https://thawing-ocean-39365.herokuapp.com:"+response.data.port);
       localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
     }).catch(err=>console.log(err));
   },[]);
