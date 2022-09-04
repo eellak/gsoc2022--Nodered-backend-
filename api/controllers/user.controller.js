@@ -9,10 +9,7 @@ const docker = new Docker({
   host:'http://localhost',
   port: 2375,//betterway, options inside create container
   });
-const { response } = require("../app");
-const { emitKeypressEvents } = require("node:readline");
-const { nextTick } = require("node:process");
-
+const {getPort} = require('get-port-please');
 
 dashboard = function(req,res){
 
@@ -388,10 +385,10 @@ else{
 };
 userState = (req,res)=>{
 const email = res.locals.email;
-User.findOne({email:email},{occupied:1,_id:0},(err,user)=>{
+User.findOne({email:email},{occupied:1,_id:0,port:1},(err,user)=>{
 if(err)console.log(err);
 else{
-  res.json({headers:{authorization:res.locals.token},occupied:user.occupied});
+  res.json({headers:{authorization:res.locals.token},occupied:user.occupied,port:user.port});
 }
 });
 };

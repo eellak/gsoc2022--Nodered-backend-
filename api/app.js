@@ -38,26 +38,26 @@ var dbPass = process.env.DB_PASSWORD;
 var dbPort = process.env.DB_PORT || "27017";
 
 
-mongoose
-  .connect(
-    "mongodb://" +
-    dbUser +
-    ":" +
-    dbPass +
-    "@" +
-    dbHost +
-    ":" +
-    dbPort +
-    "/" +
-    dbName
-    // ,
-    // {
-    //   useUnifiedTopology: true,
-    //   // useCreateIndex: true,
-    //   promiseLibrary: require("bluebird"),
-    //   useNewUrlParser: true,
-    // }
-  )
+mongoose.connect("mongodb+srv://admin-yash:gfoss16378@nodered-app.z1aulua.mongodb.net/?retryWrites=true&w=majority")
+  // .connect(
+  //   "mongodb://" +
+  //   dbUser +
+  //   ":" +
+  //   dbPass +
+  //   "@" +
+  //   dbHost +
+  //   ":" +
+  //   dbPort +
+  //   "/" +
+  //   dbName
+  //   // ,
+  //   // {
+  //   //   useUnifiedTopology: true,
+  //   //   // useCreateIndex: true,
+  //   //   promiseLibrary: require("bluebird"),
+  //   //   useNewUrlParser: true,
+  //   // }
+  // )
   .then(() => console.log("connection successful at port"))
   .catch((err) => console.error(err));
 // mongoose.connect("mongodb://localhost:27017/gfoss_db");
@@ -76,11 +76,11 @@ app.use(routes);
 //AUTHORIZED ROUTES
 require('./routes/user.routes')(app);
 
-const _dirname='/app/client';
+// const _dirname='/app/client';
 
-app.use(express.static(path.join(_dirname, 'build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 app.get('/*', (req, res) => {
-  res.sendFile(path.join(_dirname, 'build', 'index.html'));
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
 });
 
 // catch 404 and forward to error handler

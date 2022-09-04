@@ -1,3 +1,4 @@
+const {getPort}= require('get-port-please');
 var bodyparser = require("body-parser");
 var config = require("../config.js");
 var { verifySignUp } = require("../middlewares");
@@ -42,23 +43,30 @@ exports.userRegister = async function (req,res,next){
            User.findOne({email:"ports"},(err,foundUser)=>{
                 if(err)console.log(err);
                 curPort=foundUser.port;
-                const user = new User({
-                email: req.body.email,
-                toc: "",
-                port: curPort,
-                username:username
-                });
                 curPort=parseInt(curPort,10);
-                curPort++;
-                User.findOneAndUpdate({email:"ports"},{port:curPort},(err,foundUser)=>{
+                getPort({portRange:[curPort,10000]}).then(port => {
+                  curPort=port;
+                  const user = new User({
+                    email: req.body.email,
+                    toc: "",
+                    port: curPort,
+                    username:username
+              });
+              curPort++;
+              User.findOneAndUpdate({email:"ports"},{port:curPort},(err,foundUser)=>{
                 if(err)console.log(err);
                 user.save((err, user) => {
-                  if(err)console.log(err);
+                  if(err){
+                    console.log(err);
+                    res.send({success:false,message:"Please try again"});
+                    return;
+                  }
                   console.log(user.username);
                   exec(`mkdir "../data/${user.username}"`,err => console.log(err));
                   next();
                 });
               });
+            });
             });
         });
           

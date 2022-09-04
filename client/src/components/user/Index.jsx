@@ -7,11 +7,14 @@ import axios from 'axios';
 function UserPage({setLoader}) {
   const navigate = useNavigate();
   const [running, setRunning]= useState(false);
+  const [address, setAddress]= useState(null);
   useEffect(()=>{
     let token=JSON.parse(localStorage.getItem("token"));
     let config = {headers:{authorization:token}};
     axios.get('/occupied',config).then(response=>{
+      console.log(response.data.port);
       setRunning(response.data.occupied);
+      setAddress("http://localhost:"+response.data.port);
       localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
     }).catch(err=>console.log(err));
   },[]);
@@ -51,6 +54,7 @@ function UserPage({setLoader}) {
     <button style={buttonStyle} onClick={handleLogout}>Logout</button>
     {running?<form onSubmit={handleStop}>
     <div>
+    <p><a href={address} target="_blank">Link</a> to instance</p>
     <p><span>Annotation: </span><input name='annotation' type="text" /></p>
     <p><span>Accessibility: Public</span><input type="radio" name="accessibility" value="Public" checked="checked"/>
     <span>Private</span><input type="radio" name="accessibility" value="Private"/></p>
