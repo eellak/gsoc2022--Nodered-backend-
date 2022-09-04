@@ -4,7 +4,7 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
-axios.defaults.baseURL = 'http://localhost:3001/api';
+axios.defaults.baseURL = 'https://thawing-ocean-39365.herokuapp.com/api';
 var Auth_Token = localStorage.getItem("token");
 // axios.defaults.headers.common['Authorization'] = Auth_Token;
 //check sentry
