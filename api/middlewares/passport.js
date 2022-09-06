@@ -35,7 +35,7 @@ try{
 passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3001/auth/google/callback"
+    callbackURL: "ec2-35-90-111-64.us-west-2.compute.amazonaws.com:3001/auth/google/callback"
   },
   function(req,accessToken, refreshToken, profile, done) {
       //console.log(accessToken, refreshToken, profile)
