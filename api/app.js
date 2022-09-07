@@ -16,7 +16,7 @@ const { default: mongoose } = require('mongoose');
 var corsOptions = {
   origin: "https://35.90.111.64/:3000"
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 //to parse requests of content-type - applicaiton/json
 app.use(express.json());
