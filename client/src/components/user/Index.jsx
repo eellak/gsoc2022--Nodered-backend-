@@ -14,7 +14,7 @@ function UserPage({setLoader}) {
     axios.get('/occupied',config).then(response=>{
       console.log(response.data.port);
       setRunning(response.data.occupied);
-      setAddress("ec2-35-90-111-64.us-west-2.compute.amazonaws.com:"+response.data.port);
+      setAddress("http://ec2-35-92-23-255.us-west-2.compute.amazonaws.com:"+response.data.port);
       localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
     }).catch(err=>console.log(err));
   },[]);
