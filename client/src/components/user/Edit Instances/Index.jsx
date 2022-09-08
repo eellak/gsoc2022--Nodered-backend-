@@ -23,7 +23,7 @@ function EditInstances({setRunning,setLoader}){
             setRunning(response.data.occupied);
             setList(response.data.instances);
             localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
-        }).catch(err => console.log(err));
+        }).catch(err => {if(err){console.log(err);navigate('/');}});
         // }
     },[]);
      

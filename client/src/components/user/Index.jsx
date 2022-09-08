@@ -14,9 +14,16 @@ function UserPage({setLoader}) {
     axios.get('/occupied',config).then(response=>{
       console.log(response.data.port);
       setRunning(response.data.occupied);
-      setAddress("http://ec2-35-92-23-255.us-west-2.compute.amazonaws.com:"+response.data.port);
+      let url = "http://www.crochold.com:"+response.data.port;
+      // let url = "http://localhost:"+response.data.port;
+      if(response.data.occupied){
+      setTimeout(() => {
+        window.open(url, '_blank');
+      }, 1500);
+    }
+      setAddress(url);
       localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
-    }).catch(err=>console.log(err));
+    }).catch(err=>{if(err){console.log(err);navigate('/');}});
   },[]);
   function handleStop(e){
     setLoader(true);

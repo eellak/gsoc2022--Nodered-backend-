@@ -2,7 +2,7 @@
   "name": "client",
   "version": "0.1.0",
   "private": true,
-  "proxy": "http://ec2-35-92-23-255.us-west-2.compute.amazonaws.com:3001",
+  "proxy": "https://aviii.me:8443",
   "dependencies": {
     "@react-oauth/google": "^0.2.6",
     "@testing-library/jest-dom": "^5.16.4",

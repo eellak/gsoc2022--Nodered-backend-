@@ -4,7 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import axios from 'axios';
-axios.defaults.baseURL = 'http://ec2-35-92-23-255.us-west-2.compute.amazonaws.com:3001/api';
+axios.defaults.baseURL = 'https://aviii.me:8443/api';
+// axios.defaults.baseURL = 'https://localhost:8443/api';
 var Auth_Token = localStorage.getItem("token");
 // axios.defaults.headers.common['Authorization'] = Auth_Token;
 //check sentry

@@ -18,7 +18,7 @@ export default ({setRunning,setLoader})=>{
             // console.log(response.data);
             setList(response.data.instances);
             localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
-        }).catch(err => console.log(err));
+        }).catch(err => {if(err){console.log(err);navigate('/');}});
         // }
     },[]);//run on only initial render || find more inf,, if refresh rerenders it's cool
     
