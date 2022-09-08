@@ -107,6 +107,7 @@ Image:'nodered/node-red',
 //save or discard
 const publicpath="./neu";
 stopContainer = (req,res) => {
+  try{
   //save,discard
   console.log(req.body);
   const annotation = req.body.annotation;
@@ -215,6 +216,7 @@ res.json({success:true, headers:{
 
 }
 // });
+  }catch(err){console.log(err);}
 };
 
 cloneInstances = (req,res) => {

@@ -14,7 +14,7 @@ function UserPage({setLoader}) {
     axios.get('/occupied',config).then(response=>{
       console.log(response.data.port);
       setRunning(response.data.occupied);
-      let url = "http://www.crochold.com:"+response.data.port;
+      let url = "http://crochold.com:"+response.data.port;
       // let url = "http://localhost:"+response.data.port;
       if(response.data.occupied){
       setTimeout(() => {
@@ -26,6 +26,7 @@ function UserPage({setLoader}) {
     }).catch(err=>{if(err){console.log(err);navigate('/');}});
   },[]);
   function handleStop(e){
+    try{
     setLoader(true);
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
@@ -35,6 +36,7 @@ function UserPage({setLoader}) {
       localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
       setLoader(false);
     }).catch(err => console.log(err));
+  }catch(err){console.log('AND');console.log(err);}
   };
   function handleLogout(e){
     localStorage.removeItem("token");
