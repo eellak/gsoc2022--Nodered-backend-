@@ -1,6 +1,6 @@
 # gsoc2022--Nodered-WebApp-
 
-# BASE IDEA
+## BASE IDEA
 NodeRed is one of the most well known low-code IoT programming tools, offering a large number of ready-to-use libraries. Nevertheless, it lacks modern aspects of system deployments, like multi-user server functionalities, since one NodeRed deployment can support only one user. In this context we propose a web application written in NodeJs, that will provide a web-based interface, via which the management (creation, deletion and deployment) of NodeRed instances will be performed. Each NodeRed instance will be deployed using Docker. Furthermore, the system will support saving annotated NodeRed deployments which contain specific nodes (or flows), so as to easily create new deployments that offer personalized/aggregated functionality. E.g. if a user creates flows annotated as "Raspberry Pi GPIO" and another creates "Google Firebase", the system should be able to create a new NodeRed instance that contains one of these flow sets or both, according to what the end user needs.
 
 FINALIZED USE-CASES
