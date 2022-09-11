@@ -1,38 +1,20 @@
 # gsoc2022--Nodered-WebApp-
 
-Express API (http://localhost:3001/api)
-- /register || registers users with unique username and port no.
-- /create-fresh || creates fresh instance/container => request's body contains "selections" array with element format {username:"",annotation:"}
-  if empty, it creates a new container, otherwise it creates a cloned container => for better insight check user.routes.js
-- /stop || stops/kills container, if "annotation" is mentioned in req.body, it saves the instance in user's directory.
+BASE IDEA
+NodeRed is one of the most well known low-code IoT programming tools, offering a large number of ready-to-use libraries. Nevertheless, it lacks modern aspects of system deployments, like multi-user server functionalities, since one NodeRed deployment can support only one user. In this context we propose a web application written in NodeJs, that will provide a web-based interface, via which the management (creation, deletion and deployment) of NodeRed instances will be performed. Each NodeRed instance will be deployed using Docker. Furthermore, the system will support saving annotated NodeRed deployments which contain specific nodes (or flows), so as to easily create new deployments that offer personalized/aggregated functionality. E.g. if a user creates flows annotated as "Raspberry Pi GPIO" and another creates "Google Firebase", the system should be able to create a new NodeRed instance that contains one of these flow sets or both, according to what the end user needs.
 
-all user data is stored in data directory, ex) data/username/userannotation/(2 files flows.json, nodes.json)
+FINALIZED USE-CASES
+-Users will be able to sign-in/sign-up via Google Oauth.
+-Users can create a "fresh" Node-Red instance(technically, deploy a docker container on server for themselves), and then can save their work by providing an "annotation" & "accessibility"(public/private) before killing their instance.
+-Users can access other people's (public)work, and create a "cloned" Node-Red instance, which could also be a merged-product of multiple instances, depending upon the number of instances, the user selected to be cloned.
+-The user is currently allowed to only fire up one container at a time on the server. He/She is required to stop a currently running instance to be able to fire up a new one.
 
-Hence, the above api facilitates all possible actions one could think of :), from creating and saving a new instance to cloning multiple instances of other users and saving even that.
+INTERFACE
+Upon login, the user is shown his/her dashboard, which has two lists- "User Deployments" & "Others Deployments". The User-list allows user to select none/one instance to create fresh/ clone a past or delete a past annotation respectively. The Others-list also allows user to do all that, except the deleting option. The Others-list also allows user to select multiple instances at a time while cloning, hence deploy one instance, containing all the flows/works he/she chose from the list. Apart from the two lists there is also a logout button available.
 
+TECH STACK USED
+MERN stack, Docker, AWS EC2 host.
 
-Everything in controller has been tested with success.
+CURRENT IMPLEMENTATION
 
-now coming to using these routes,
-React Client (http://localhost:3000)
-
-All the components have been written- Edit instance & Clone instance are the ones which will allow user to -> create, edit, stop, clone || essentially everything the web application is about.
-Other than these, an about page along with using instructions is also there.
-The forms with checkboxes to display and collect data, their handlers etc. everything is done.
-
-Things that remain,
-- changing regular authentication to O-auth 2.0 to facilitate registering via gmail/github
-- configuring cors and fetch api to allow client and api to communicate with each other and retrieve data from the database
-- A loading wheel- to prevent user from interacting with the page until container's being prepared in backend to then update the same page.
-
-Testing instructions(run- npm run server, in api directory)
-
-have two postman tabs opened, 
-- one for register/login- to generate token for each call- since it refreshes after each auth request to the api & 
-- the second one to make create/stop calls using the body and Authorization(bearer token) sections of the request.
-
-Important Note 
-- after starting a container, create another one for the same user only after stopping the previous one, because each user has only one unique port in the server to begin with
-- use desktop Postman app, other versions dont support sending array("selections" in our case) with request body or have complicated ways of achieving it.
-
-Thus, 85-90% of the work's done. Any remaining time shall be used to glamourize the Web app frontend further :)
+FUTURE WORK
