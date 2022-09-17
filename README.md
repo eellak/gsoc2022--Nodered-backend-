@@ -17,14 +17,14 @@ Upon login, the user is shown his/her dashboard, which has two lists- "User Depl
 ## TECH STACK USED
 MERN stack, Docker, AWS EC2 host.
 
-## WORKING DEMONSTRATION
-Video demo- https://drive.google.com/file/d/1i9_4n4Sxri85eptutktPSd8S9SM4a60l/view?usp=sharing <br/> Website link- https://aviii.me:8443
-
 ## FLOW
 ![gfossreadme](https://user-images.githubusercontent.com/89726452/190868986-510bde50-fcce-48a9-adf0-fa3be7e76609.jpeg)
 
 ## CURRENT IMPLEMENTATION
 Upon registration, the user is assigned a unique username(generated from his email), and a unique available port number on the host. The api uses docker to run Node-red containers on the host and makes a particular user's container to listen on his/her assigned port number, and thereby exposes that port to the user.<br/>After Oauth login, the Application creates a jwt token and resets the token whenever user makes a request to the server(invalidating all the past tokens), thereby achieving high security of user-data.<br/>All in all, the application performs 5 docker operations in various combinations to achieve all its funcitonalities. The operations include- the create, kill, restart methods of the 'dockerode' api & the two versions of 'docker cp' shell-command to transfer data between host and container. Persistance of data includes extracting data from flows.json and package.json files of the container.<br/>The merging functionality of the applicaton is tricky. Node-red assigns unique id's(7-8 character length) to each of it's elements in flows.json to uniquely identify them in a flow. However, two different flows.json files can have one or more id's clashing, threreby simply merging the flows files doesnt actually work and recursive editing of id's(present superficially and also in embedded objects of flows.json) is required. But while iterating through the flows to alter matching id's, the issue arises in ensuring that the altered id's won't be  occuring again in the remaining flows.json files in the iteration. This, via straightforward brute force, can result in O(n^n) time complexity. The algorithm being used in the application, utilizes the fact, that Node-red assigns unique id's to atleast a single flows.json file and smartly manipulates all the id's, achieving the above task of ensuring unique id's, in a time complexity of just O(n)!<br/>Current implementation only allows the user to run a single container at a time on the host.  
+
+## WORKING DEMONSTRATION
+Video demo- https://drive.google.com/file/d/1i9_4n4Sxri85eptutktPSd8S9SM4a60l/view?usp=sharing <br/> Website link- https://aviii.me:8443
 
 ## FUTURE WORK
 Improving the styling of the gui and adding a user's guide, about section in the website. Storing everything in mongo-db and nothing on the host, thereby reading directly from the db and writing to the container without any host intervention. Allowing user to manually restart the container, and have custom nodes installed. Reducing frequency of jwt token-resets, as it's making the site secure but slower!
