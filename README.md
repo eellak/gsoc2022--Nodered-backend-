@@ -10,6 +10,7 @@ NodeRed is one of the most well known low-code IoT programming tools, offering a
 <li>Users can access other people's (public)work, and create a "cloned" Node-Red instance, which could also be a merged-product of multiple instances, depending upon the number of instances, the user selected to be cloned.</li>
 <li>The user is currently allowed to only fire up one container at a time on the server. He/She is required to stop a currently running instance to be able to fire up a new one.</li> 
 </ul>
+
 ## INTERFACE
 Upon login, the user is shown his/her dashboard, which has two lists- "User Deployments" & "Others Deployments". The User-list allows user to select none/one instance to create fresh/ clone a past or delete a past annotation respectively. The Others-list also allows user to do all that, except the deleting option. The Others-list also allows user to select multiple instances at a time while cloning, hence deploy one instance, containing all the flows/works he/she chose from the list. Apart from the two lists there is also a logout button available.
 
