@@ -29,5 +29,5 @@ Improving the styling of the gui and adding a user's guide, about section in the
 
 ## PROJECT TEAM
 <ul>
-<li>Google Summer of Code 2022 Student: Yash Gupta (<a href="https://www.linkedin.com/in/yash-gupta-98a9b1205/">Linkedin<a/>)<li/><li>Mentor: Manos Tsardoulias (<a href="https://www.linkedin.com/in/manos-tsardoulias-435a7a24/?originalSubdomain=gr">Linkedin<a/>)<li/><li>Mentor: Konstantinos Panayiotou (<a href="https://www.linkedin.com/in/konstantinos-panayiotou-b8111675/?originalSubdomain=gr">Linkedin<a/>)<li/><li>Mentor: Andreas Symeonidis (<a href="https://www.linkedin.com/in/andreas-symeonidis-3455843/?originalSubdomain=gr">Linkedin<a/>)<li/>
-<ul/>
+<li>Google Summer of Code 2022 Student: Yash Gupta (<a href="https://www.linkedin.com/in/yash-gupta-98a9b1205/">Linkedin</a>)</li><li>Mentor: Manos Tsardoulias (<a href="https://www.linkedin.com/in/manos-tsardoulias-435a7a24/?originalSubdomain=gr">Linkedin</a>)</li><li>Mentor: Konstantinos Panayiotou (<a href="https://www.linkedin.com/in/konstantinos-panayiotou-b8111675/?originalSubdomain=gr">Linkedin</a>)</li><li>Mentor: Andreas Symeonidis (<a href="https://www.linkedin.com/in/andreas-symeonidis-3455843/?originalSubdomain=gr">Linkedin</a>)</li>
+</ul>
