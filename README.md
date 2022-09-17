@@ -28,4 +28,4 @@ Upon registration, the user is assigned a unique username(generated from his ema
 Improving the styling of the gui and adding a user's guide, about section in the website. Storing everything in mongo-db and nothing on the host, thereby reading directly from the db and writing to the container without any host intervention. Allowing user to manually restart the container, and have custom nodes installed. Reducing frequency of jwt token-resets, as it's making the site secure but slower!
 
 ## PROJECT TEAM
-Google Summer of Code 2022 Student: Yash Gupta (<a href="https://www.linkedin.com/in/yash-gupta-98a9b1205/">Linkedin<a/>) 
+Google Summer of Code 2022 Student: Yash Gupta (<a href="https://www.linkedin.com/in/yash-gupta-98a9b1205/">Linkedin<a/>)<br/>Mentor: Manos Tsardoulias (<a href="https://www.linkedin.com/in/manos-tsardoulias-435a7a24/?originalSubdomain=gr">Linkedin<a/>)<br/>Mentor: Konstantinos Panayiotou (<a href="https://www.linkedin.com/in/konstantinos-panayiotou-b8111675/?originalSubdomain=gr">Linkedin<a/>)<br/>Mentor: Andreas Symeonidis (<a href="https://www.linkedin.com/in/andreas-symeonidis-3455843/?originalSubdomain=gr">Linkedin<a/>)
