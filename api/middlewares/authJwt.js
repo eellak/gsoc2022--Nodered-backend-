@@ -6,7 +6,7 @@ const TOKEN_EXPIRATION = 1000 * 60 * 60 * 24
 
 verifyToken = (req, res, next) => { 
 // console.log(req.headers);
-    let token = req.headers["authorization"];
+    let token = req.headers["authorization"] || req.headers["Authorization"];
     if(!token) {
         return res.status(403).send({message: "No token provided!"});
     }
