@@ -11,6 +11,7 @@ var jwt = require('jsonwebtoken'),
     Ports = require("../models/port");
 
 
+const TOKEN_EXPIRATION = 1000 * 60 * 60 * 24
 try{
 exports.userRegister = async function (req,res,next){
   if(
@@ -100,7 +101,7 @@ exports.userLogin = function (req,res){
                 toc: date.toString(),    //time of creation
               };
               var token = jwt.sign({ data: user}, config.secret,{
-                expiresIn: 1000*60*60*24,
+                expiresIn: TOKEN_EXPIRATION,
               });
               if(!res.headersSent){
 
