@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "server": "nodemon ./bin/www"
+    "server": "node ./bin/www"
   },
   "dependencies": {
     "babel": "^6.23.0",
@@ -18,12 +18,15 @@
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
     "express-session": "^1.17.3",
+    "get-port-please": "^2.6.1",
     "http-errors": "~1.6.3",
     "jade": "~1.11.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.3.4",
     "morgan": "~1.9.1",
     "passport": "^0.6.0",
+    "passport-google-oauth2": "^0.2.0",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^7.1.2"
   }

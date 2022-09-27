@@ -18,7 +18,7 @@ export default ({setRunning,setLoader})=>{
             // console.log(response.data);
             setList(response.data.instances);
             localStorage.setItem("token",JSON.stringify('Bearer '+response.data.headers.authorization));
-        }).catch(err => console.log(err));
+        }).catch(err => {if(err){console.log(err);navigate('/');}});
         // }
     },[]);//run on only initial render || find more inf,, if refresh rerenders it's cool
     
@@ -63,7 +63,7 @@ axios.post('/create-fresh',{selections:selections},config).then(response => {
                 <thead>
                     <th>S.No.</th>
                     <th>User: Instance Name</th>
-                    <th>Clone</th>
+                    <th></th>
                 </thead>
                 <tbody>
                     {
@@ -80,7 +80,7 @@ axios.post('/create-fresh',{selections:selections},config).then(response => {
                     }
                 </tbody>
             </table>
-            <button type="submit">Submit</button>
+            <button type="submit">Create</button>
         </form>
     </React.Fragment>
     );

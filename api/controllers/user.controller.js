@@ -9,10 +9,7 @@ const docker = new Docker({
   host:'http://localhost',
   port: 2375,//betterway, options inside create container
   });
-const { response } = require("../app");
-const { emitKeypressEvents } = require("node:readline");
-const { nextTick } = require("node:process");
-
+const {getPort} = require('get-port-please');
 
 dashboard = function(req,res){
 
@@ -110,8 +107,11 @@ Image:'nodered/node-red',
 //save or discard
 const publicpath="./neu";
 stopContainer = (req,res) => {
+  try{
   //save,discard
+  console.log(req.body);
   const annotation = req.body.annotation;
+  const accessibility = req.body.accessibility;
   const username = res.locals.username;
   const email = res.locals.email;
   // User.findOne({email:email},function(err,user){
@@ -132,7 +132,7 @@ stopContainer = (req,res) => {
     {
     instances:{
       annotation:annotation,
-      accessibility:"public",
+      accessibility:accessibility,
     }
     }})//anything better?
   
@@ -216,14 +216,15 @@ res.json({success:true, headers:{
 
 }
 // });
+  }catch(err){console.log(err);}
 };
 
 cloneInstances = (req,res) => {
-  try{
-const cont = res.locals.username;
-const username = res.locals.username;
-let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
-if(annotations.length===0){
+  const cont = res.locals.username;
+  const username = res.locals.username;
+  let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
+  console.log(annotations);  
+if(annotations[0] === null){
   return res.json({
     headers:{
       authorization:res.locals.token
@@ -301,7 +302,7 @@ Exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
       //   });
       // res.json({bomb:true});
       
-    }catch(err){console.log(err)};
+
     
 };
 deleteInstance = (req,res)=>{
@@ -347,7 +348,7 @@ else{
   let instances=[];
   docs.forEach(user => {
     user.instances.forEach(element=>{
-    if(element.accessibility === "public"){
+    if(element.accessibility === "Public"){
       instances.push({username:user.username,annotation:element.annotation});
     }
   }
@@ -386,10 +387,10 @@ else{
 };
 userState = (req,res)=>{
 const email = res.locals.email;
-User.findOne({email:email},{occupied:1,_id:0},(err,user)=>{
+User.findOne({email:email},{occupied:1,_id:0,port:1},(err,user)=>{
 if(err)console.log(err);
 else{
-  res.json({headers:{authorization:res.locals.token},occupied:user.occupied});
+  res.json({headers:{authorization:res.locals.token},occupied:user.occupied,port:user.port});
 }
 });
 };

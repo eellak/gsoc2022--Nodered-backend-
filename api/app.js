@@ -14,9 +14,9 @@ const { default: mongoose } = require('mongoose');
 
 //CORS
 var corsOptions = {
-  origin: "http://localhost:3000"
+  origin: "https://35.90.111.64:3000"
 };
-app.use(cors(corsOptions));
+app.use(cors());
 
 //to parse requests of content-type - applicaiton/json
 app.use(express.json());
@@ -38,40 +38,50 @@ var dbPass = process.env.DB_PASSWORD;
 var dbPort = process.env.DB_PORT || "27017";
 
 
-mongoose
-  .connect(
-    "mongodb://" +
-    dbUser +
-    ":" +
-    dbPass +
-    "@" +
-    dbHost +
-    ":" +
-    dbPort +
-    "/" +
-    dbName
-    // ,
-    // {
-    //   useUnifiedTopology: true,
-    //   // useCreateIndex: true,
-    //   promiseLibrary: require("bluebird"),
-    //   useNewUrlParser: true,
-    // }
-  )
+mongoose.connect("mongodb+srv://admin-yash:gfoss16378@nodered-app.z1aulua.mongodb.net/?retryWrites=true&w=majority")
+  // .connect(
+  //   "mongodb://" +
+  //   dbUser +
+  //   ":" +
+  //   dbPass +
+  //   "@" +
+  //   dbHost +
+  //   ":" +
+  //   dbPort +
+  //   "/" +
+  //   dbName
+  //   // ,
+  //   // {
+  //   //   useUnifiedTopology: true,
+  //   //   // useCreateIndex: true,
+  //   //   promiseLibrary: require("bluebird"),
+  //   //   useNewUrlParser: true,
+  //   // }
+  // )
   .then(() => console.log("connection successful at port"))
   .catch((err) => console.error(err));
 // mongoose.connect("mongodb://localhost:27017/gfoss_db");
 
 app.use(logger('dev'));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// app.use(express.static(path.join(__dirname, 'public')));
 
 
 //UNAUTHORIZED ROUTES
 app.use(routes);
 
+// //OAUTH ROUTES
+// require('./middlewares/passport')(app);
+
 //AUTHORIZED ROUTES
 require('./routes/user.routes')(app);
+
+// const _dirname='/app/client';
+
+app.use(express.static(path.join(__dirname, '../client/build')));
+app.get('/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../client/build', 'index.html'));
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -86,7 +96,8 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
+  res.status(err.status || 512);
+  console.log(err);
   res.render('error');
 });
 
