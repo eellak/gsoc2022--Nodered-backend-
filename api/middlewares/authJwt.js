@@ -2,10 +2,11 @@ const jwt = require("jsonwebtoken");
 const config = require("../config.js");
 var User = require("../models/user");
 
+const TOKEN_EXPIRATION = 1000 * 60 * 60 * 24
 
 verifyToken = (req, res, next) => { 
 // console.log(req.headers);
-    let token = req.headers["authorization"];
+    let token = req.headers["authorization"] || req.headers["Authorization"];
     if(!token) {
         return res.status(403).send({message: "No token provided!"});
     }
@@ -37,7 +38,7 @@ verifyToken = (req, res, next) => {
             
                 
                 
-                var token = jwt.sign({ data: user}, config.secret,{expiresIn: 1000*60*60*24,});
+                var token = jwt.sign({ data: user}, config.secret,{expiresIn: TOKEN_EXPIRATION,});
                 
                
             res.locals.email = decoded.data.email;
