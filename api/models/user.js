@@ -7,19 +7,19 @@ var UserSchema = new mongoose.Schema({
     //     unique: true,
     //     required:true,
     // },
-    username:{
-        type:String,
-        unique:true,
+    username: {
+        type: String,
+        unique: true,
     },
-    port:{
-        type:String,
-        unique:true,
+    port: {
+        type: String,
+        unique: true,
         trim: true,
         // required:true,
     },
-    occupied:{
-        type:Boolean,
-        default:false
+    occupied: {
+        type: Boolean,
+        default: false
     }
     ,
     email: {
@@ -33,28 +33,39 @@ var UserSchema = new mongoose.Schema({
     //     type: String,
     //     required: true,
     // },
-    toc:{
-        type: String,
-        
-    },
+    // toc: {
+    //     type: String,
+
+    // },
     instances: [
-        {annotation:{
-            type:String
-        },
-        accessibility:{
-            type:String
-        },
-        flows:{type:Object},
-        nodes:{type:Object}
+        {
+            annotation: {
+                type: String
+            },
+            accessibility: {
+                type: String
+            },
+            flows: { type: Object },
+            nodes: { type: Object }
         }
     ]
 
-    
+
 
 });
+
+
+// automatically generate createdAt and updatedAt fields for every document.
+UserSchema.set("timestamps", true);
+// below fields can be accessed from document
+// {
+//     createdAt,
+//     updatedAt
+// }
+
 
 // UserSchema.methods.comparePassword = function(password) {
 //     return bcrypt.compareSync(password, this.password);
 // }
 
-module.exports = mongoose.model("User",UserSchema);
+module.exports = mongoose.model("User", UserSchema);

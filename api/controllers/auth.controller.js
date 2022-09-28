@@ -1,14 +1,14 @@
-const {getPort}= require('get-port-please');
+const { getPort } = require('get-port-please');
 var bodyparser = require("body-parser");
 var config = require("../config.js");
 var { verifySignUp } = require("../middlewares");
-var {exec} = require('node:child_process');
+var { exec } = require('node:child_process');
 
 
 var jwt = require('jsonwebtoken'),
-    bcrypt = require('bcrypt'),
-    User = require("../models/user"),
-    Ports = require("../models/port");
+  bcrypt = require('bcrypt'),
+  User = require("../models/user"),
+  Ports = require("../models/port");
 
 
 const TOKEN_EXPIRATION = 1000 * 60 * 60 * 24
@@ -68,7 +68,21 @@ exports.userRegister = async function (req,res,next){
                 });
               });
             });
+            curPort++;
+            User.findOneAndUpdate({ email: "ports" }, { port: curPort }, (err, foundUser) => {
+              if (err) console.log(err);
+              user.save((err, user) => {
+                if (err) {
+                  console.log(err);
+                  res.send({ success: false, message: "Please try again" });
+                  return;
+                }
+                console.log(user.username);
+                exec(`mkdir "../data/${user.username}"`, err => console.log(err));
+                next();
+              });
             });
+          });
         });
           
         }
@@ -105,21 +119,19 @@ exports.userLogin = function (req,res){
               });
               if(!res.headersSent){
 
-                res.status(200).json({
-                  //   id: user._id, //huh??
-                  headers:{
-                    authorization:token
-                  }
-                });
+            res.status(200).json({
+              //   id: user._id, //huh??
+              headers: {
+                authorization: token
               }
-            }
-            else
-            {return res.send("User not found");}
+            });
           }
-        });
-
+        }
+        else { return res.send("User not found"); }
       }
-      else
-      {return res.send("fill it up");}
+    });
+
+  }
+  else { return res.send("fill it up"); }
 };
 
