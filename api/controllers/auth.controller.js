@@ -44,7 +44,7 @@ exports.userRegister = async function (req,res,next){
                 if(err)console.log(err);
                 curPort=foundUser.port;
                 curPort=parseInt(curPort,10);
-                getPort({portRange:[curPort,10000]}).then(port => {
+                getPort({port:curPort,portRange:[curPort,10000]}).then(port => {
                   curPort=port;
                   const user = new User({
                     email: req.body.email,
@@ -61,7 +61,7 @@ exports.userRegister = async function (req,res,next){
                     res.send({success:false,message:"Please try again"});
                     return;
                   }
-                  console.log(user.username);
+                  // console.log(user.username);
                   exec(`mkdir "../data/${user.username}"`,err => console.log(err));
                   next();
                 });

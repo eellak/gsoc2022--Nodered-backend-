@@ -220,6 +220,7 @@ res.json({success:true, headers:{
 };
 
 cloneInstances = (req,res) => {
+  try{
   const cont = res.locals.username;
   const username = res.locals.username;
   let annotations = req.body.selections;//[{username:xxx,annotation:yyy}]
@@ -303,7 +304,7 @@ Exec(`docker cp "${userpath}" ${cont}:"../data/flows.json"`,(err)=>{
       // res.json({bomb:true});
       
 
-    
+}catch(err){console.log(err);}
 };
 deleteInstance = (req,res)=>{
   const email = res.locals.email;

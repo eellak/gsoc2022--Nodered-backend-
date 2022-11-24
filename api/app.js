@@ -30,15 +30,15 @@ app.use(express.urlencoded({ extended: true }));
 
 
 
-mongoose.Promise = require("bluebird");
-var dbHost = process.env.DB_HOST || "localhost";
-var dbName = process.env.DB_NAME;
-var dbUser = process.env.DB_USERNAME;
-var dbPass = process.env.DB_PASSWORD;
-var dbPort = process.env.DB_PORT || "27017";
+// mongoose.Promise = require("bluebird");
+// var dbHost = process.env.DB_HOST || "localhost";
+// var dbName = process.env.DB_NAME;
+// var dbUser = process.env.DB_USERNAME;
+// var dbPass = process.env.DB_PASSWORD;
+// var dbPort = process.env.DB_PORT || "27017";
 
 
-mongoose.connect("mongodb+srv://admin-yash:gfoss16378@nodered-app.z1aulua.mongodb.net/?retryWrites=true&w=majority")
+mongoose.connect(`mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@nodered-app.z1aulua.mongodb.net/?retryWrites=true&w=majority`)
   // .connect(
   //   "mongodb://" +
   //   dbUser +

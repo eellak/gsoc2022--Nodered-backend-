@@ -14,8 +14,8 @@ function UserPage({setLoader}) {
     axios.get('/occupied',config).then(response=>{
       console.log(response.data.port);
       setRunning(response.data.occupied);
-      let url = "http://crochold.com:"+response.data.port;
-      // let url = "http://localhost:"+response.data.port;
+      // let url = "http://crochold.com:"+response.data.port;
+      let url = "http://aviii.me:"+response.data.port;
       if(response.data.occupied){
       setTimeout(() => {
         window.open(url, '_blank');
