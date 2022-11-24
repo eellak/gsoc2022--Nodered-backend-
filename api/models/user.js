@@ -1,6 +1,9 @@
 var mongoose = require("mongoose");
 var bcrypt = require("bcrypt");
 
+// trim every string fields of complete document
+mongoose.Schema.Types.String.set("trim", true);
+
 var UserSchema = new mongoose.Schema({
     // user_name: {
     //     type: String,
@@ -14,7 +17,6 @@ var UserSchema = new mongoose.Schema({
     port:{
         type:String,
         unique:true,
-        trim: true,
         // required:true,
     },
     occupied:{
@@ -26,7 +28,6 @@ var UserSchema = new mongoose.Schema({
         type: String,
         unique: true,
         lowercase: true,
-        trim: true,
         required: true,
     },
     // password: {
@@ -52,6 +53,10 @@ var UserSchema = new mongoose.Schema({
     
 
 });
+
+// It will create createdAt and updatedAt field automatically and 
+// also update their values on every time on performing create and update operation
+UserSchema.set("timestamps", true);
 
 // UserSchema.methods.comparePassword = function(password) {
 //     return bcrypt.compareSync(password, this.password);
